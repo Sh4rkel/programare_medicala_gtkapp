@@ -1,0 +1,3 @@
+C:/books/C programming/untitled/cmake-build-debug/CMakeFiles/gtk_app.dir
+C:/books/C programming/untitled/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/books/C programming/untitled/cmake-build-debug/CMakeFiles/rebuild_cache.dir
