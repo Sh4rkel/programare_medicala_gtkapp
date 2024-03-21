@@ -63,9 +63,11 @@ static void on_selection_changed(GtkTreeSelection *selection, gpointer user_data
         // Creaza label-uri si entry-uri pentru introducerea datelor suplimentare
         GtkWidget *name_label = gtk_label_new("Nume:");
         name_entry = gtk_entry_new();
+        gtk_entry_set_placeholder_text(GTK_ENTRY(name_entry), "ex: Ion Popescu");
 
         GtkWidget *data_label = gtk_label_new("Data:");
         data_entry = gtk_entry_new();
+        gtk_entry_set_placeholder_text(GTK_ENTRY(data_entry), "zi/luna/an, ex: 01/01/2021");
 
         GtkWidget *description_label = gtk_label_new("Motivul consultatiei dvs.:");
         description_entry = gtk_entry_new();
