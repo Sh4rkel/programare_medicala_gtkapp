@@ -36,7 +36,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 17,
+				"line" : 18,
 				"parent" : 0
 			},
 			{
@@ -315,6 +315,13 @@
 			[
 				1
 			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				3
+			]
 		}
 	],
 	"sources" : 
@@ -335,6 +342,11 @@
 			"compileGroupIndex" : 0,
 			"path" : "programare_medicala.c",
 			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "medici.txt",
+			"sourceGroupIndex" : 2
 		}
 	],
 	"type" : "EXECUTABLE"

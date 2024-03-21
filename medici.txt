@@ -1,0 +1,9 @@
+Ion Popescu,Oncologie,Spitalul Clinic de Urgenta, Bucuresti
+Ionut Popescu,Medicina Interna, Spitalul Clinic de Urgenta, Bucuresti
+Andrei Marin,Chirurgie Generala, Spitalul Judetean de Urgenta, Buzau
+Mihai Raduleascu, Chirurgie Plastica, Spitalul de Arsi, Bucuresti
+Raluca Muresan, Chirurgie Plastica, Spitalul de Arsi, Bucuresti
+Mihai Ionac, Chirurgie Plastica, Spitalul de Arsi, Bucuresti
+Alexandra Iulia Munteanu, Endocrinologie, Spitalul Județean de Urgență, Timișoara
+Mihai Ionac, Cardiologie, Spitalul "Pius Brinzeu", Timisoara
+Roxana Livia Iliescu, Neurologie, Spitalul "Pius Brinzeu", Timisoara

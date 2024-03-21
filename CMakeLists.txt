@@ -11,7 +11,8 @@ add_definitions(${GTK3_CFLAGS_OTHER})
 # Define your project's executable target
 add_executable(gtk_app main.c
         programare_medicala.h
-        programare_medicala.c)  # Change this line
+        programare_medicala.c
+        medici.txt)
 
 
 target_link_libraries(gtk_app ${GTK3_LIBRARIES})

@@ -22,26 +22,27 @@ typedef struct {
     GtkWidget *display_label;
 } AppWidgets;
 
+
 static void on_save_button_clicked(GtkWidget *widget, gpointer user_data) {
     // Colectam datele introduse de utilizator
     AppWidgets *widgets = (AppWidgets *)user_data;
-    const gchar *name = gtk_entry_get_text(GTK_ENTRY(name_entry));
+    const gchar *nume = gtk_entry_get_text(GTK_ENTRY(name_entry));
     const gchar *data = gtk_entry_get_text(GTK_ENTRY(data_entry));
     const gchar *description = gtk_entry_get_text(GTK_ENTRY(description_entry));
 
-    gchar *display_text = g_strdup_printf("Nume: %s\nData: %s\nDescriere: %s\n", name, data, description);
+    gchar *display_text = g_strdup_printf("Nume: %s\nData: %s\nDescriere: %s\n", nume, data, description);
     gtk_label_set_text(GTK_LABEL(widgets->display_label), display_text);
     g_free(display_text);
 
     // TODO: Salvarea datelor intr-o baza de date pentru a putea fi accesate ulterior
 }
 
-
 // Functie apelata atunci cand se schimba selectia in lista de medici
 static void on_selection_changed(GtkTreeSelection *selection, gpointer user_data) {
     GtkTreeModel *model;
     GtkTreeIter iter;
     AppWidgets *widgets = (AppWidgets *)user_data;
+
     if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
         gchar *nume;
         gchar *specialitate;
@@ -50,29 +51,26 @@ static void on_selection_changed(GtkTreeSelection *selection, gpointer user_data
 
         gtk_tree_model_get(model, &iter, 0, &nume, 1, &specialitate, 2, &loc_de_munca, 3, &lucreaza_cu_casa_de_asigurari, -1);
 
-
-
         // Creaza o fereastra noua pentru a introduce datele suplimentare
         GtkWidget *details_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(details_window), "Detalii Medic");
-        gtk_window_set_default_size(GTK_WINDOW(details_window), 300, 200);
+        gtk_window_set_title(GTK_WINDOW(details_window), "Programeaza-te la medic");
+        gtk_window_set_default_size(GTK_WINDOW(details_window), 500, 350);
+        gtk_window_set_icon_from_file(GTK_WINDOW(details_window), "C:\\books\\C programming\\untitled\\icon_med.ico", NULL);
 
         GtkWidget *details_grid = gtk_grid_new();
         gtk_container_add(GTK_CONTAINER(details_window), details_grid);
 
         // Creaza label-uri si entry-uri pentru introducerea datelor suplimentare
         GtkWidget *name_label = gtk_label_new("Nume:");
-        name_entry = gtk_entry_new();  // Make the entry widget global
-        gtk_entry_set_text(GTK_ENTRY(name_entry), nume);
+        name_entry = gtk_entry_new();
 
         GtkWidget *data_label = gtk_label_new("Data:");
-        data_entry = gtk_entry_new();  // Make the entry widget global
+        data_entry = gtk_entry_new();
 
-        GtkWidget *description_label = gtk_label_new("Descriere:");
-        description_entry = gtk_entry_new();  // Make the entry widget global
-
-
-
+        GtkWidget *description_label = gtk_label_new("Motivul consultatiei dvs.:");
+        description_entry = gtk_entry_new();
+        gtk_entry_set_max_length(GTK_ENTRY(description_entry), 500);
+        gtk_entry_set_placeholder_text(GTK_ENTRY(description_entry), "Maxim 500 de caractere");
         // Adauga label-urile si entry-urile in grid
         gtk_grid_attach(GTK_GRID(details_grid), name_label, 0, 0, 1, 1);
         gtk_grid_attach(GTK_GRID(details_grid), name_entry, 1, 0, 1, 1);
@@ -101,7 +99,6 @@ static void on_selection_changed(GtkTreeSelection *selection, gpointer user_data
     }
 }
 
-
 static void adauga_medic(GtkWidget *widget, AppWidgets *widgets) {
     const gchar *nume = gtk_entry_get_text(GTK_ENTRY(widgets->nume_entry));
     const gchar *specialitate = gtk_entry_get_text(GTK_ENTRY(widgets->specialitate_entry));
@@ -128,10 +125,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
     window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), "Aplicație de programare medicală");
-    gtk_window_set_default_size(GTK_WINDOW(window), 600, 400);
-
-
-
+    gtk_window_set_default_size(GTK_WINDOW(window), 700, 600);
     grid = gtk_grid_new();
     gtk_container_add(GTK_CONTAINER(window), grid);
 
@@ -140,10 +134,10 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
     GtkWidget *doctor_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(widgets->doctor_store));
     gtk_grid_attach(GTK_GRID(grid), doctor_view, 0, 0, 3, 6);
+    gtk_window_set_icon_from_file(GTK_WINDOW(window), "C:\\books\\C programming\\untitled\\icon_med.ico", NULL);
 
     GtkCellRenderer *renderer;
     GtkTreeViewColumn *column;
-
     GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(doctor_view));
     g_signal_connect(selection, "changed", G_CALLBACK(on_selection_changed), widgets);
     renderer = gtk_cell_renderer_text_new();
@@ -163,6 +157,26 @@ static void activate(GtkApplication *app, gpointer user_data) {
     gtk_tree_view_append_column(GTK_TREE_VIEW(doctor_view), column);
 
     // Adauga medic
+
+    GtkTreeIter iter;
+    gtk_list_store_append(widgets->doctor_store, &iter);
+    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Ion Popescu", 1, "Oncologie", 2, "Spitalul Clinic de Urgenta, Bucuresti", 3, TRUE, -1);
+    gtk_list_store_append(widgets->doctor_store, &iter);
+    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Ionut Popescu", 1, "Medicina Interna", 2, "Spitalul Clinic de Urgenta, Bucuresti", 3, TRUE, -1);
+    gtk_list_store_append(widgets->doctor_store, &iter);
+    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Andrei Marin", 1, "Chirurgie Generala", 2, "Spitalul Judetean de Urgenta, Buzau", 3, TRUE, -1);
+    gtk_list_store_append(widgets->doctor_store, &iter);
+    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Mihai Raduleascu", 1, "Chirurgie Plastica", 2, "Spitalul Clinic de Urgență Chirurgie Plastică, Reparatorie și Arsuri, Bucuresti", 3, TRUE, -1);
+    gtk_list_store_append(widgets->doctor_store, &iter);
+    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Raluca Muresan", 1, "Chirurgie Plastica", 2, "Spitalul Clinic de Urgență Chirurgie Plastică, Reparatorie și Arsuri, Bucuresti", 3, TRUE, -1);
+    gtk_list_store_append(widgets->doctor_store, &iter);
+    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Mihai Ionac", 1, "Chirurgie Plastica", 2, "Spitalul Clinic de Urgență Chirurgie Plastică, Reparatorie și Arsuri, Bucuresti", 3, TRUE, -1);
+    gtk_list_store_append(widgets->doctor_store, &iter);
+    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Alexandra Iulia Munteanu", 1, "Endocrinologie", 2, "Spitalul Județean de Urgență, Timisoara", 3, TRUE, -1);
+    gtk_list_store_append(widgets->doctor_store, &iter);
+    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Mihai Ionac", 1, "Cardiologie", 2, "Spitalul \"Pius Brinzeu\", Timisoara", 3, TRUE, -1);
+    gtk_list_store_append(widgets->doctor_store, &iter);
+    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Roxana Livia Iliescu", 1, "Neurologie", 2, "Spitalul \"Pius Brinzeu\", Timisoara", 3, TRUE, -1);
     GtkWidget *nume_label = gtk_label_new("Nume:");
     gtk_grid_attach(GTK_GRID(grid), nume_label, 3, 1, 1, 1);
     widgets->nume_entry = gtk_entry_new();
@@ -172,8 +186,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
     gtk_grid_attach(GTK_GRID(grid), specialitate_label, 3, 2, 1, 1);
     widgets->specialitate_entry = gtk_entry_new();
     gtk_grid_attach(GTK_GRID(grid), widgets->specialitate_entry, 4, 2, 1, 1);
-
-
 
     GtkWidget *loc_de_munca_label = gtk_label_new("Loc de Munca:");
     gtk_grid_attach(GTK_GRID(grid), loc_de_munca_label, 3, 3, 1, 1);
