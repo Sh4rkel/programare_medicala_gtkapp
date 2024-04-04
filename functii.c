@@ -6,8 +6,24 @@ void on_save_button_clicked(GtkWidget *widget, gpointer user_data) {
     const gchar *data = gtk_entry_get_text(GTK_ENTRY(widgets->data_entry));
     const gchar *description = gtk_entry_get_text(GTK_ENTRY(widgets->description_entry));
 
+    if (g_strcmp0(nume, "") == 0 || g_strcmp0(data, "") == 0 || g_strcmp0(description, "") == 0) {
+        gtk_label_set_text(GTK_LABEL(widgets->display_label), "Toate câmpurile trebuie completate pentru a salva o programare.");
+        return;
+    }
+
     gchar *display_text = g_strdup_printf("Nume: %s\nData: %s\nDescriere: %s\n", nume, data, description);
     gtk_label_set_text(GTK_LABEL(widgets->display_label), display_text);
+
+    FILE *file = fopen("../programari.txt", "a");
+    if (file != NULL) {
+        if (widgets->selected_doctor != NULL) {
+            fprintf(file, "Doctor: %s\nNume: %s\nData: %s\nDescriere: %s\n\n", widgets->selected_doctor, nume, data, description);
+        } else {
+            fprintf(file, "Doctor: %s\nNume: %s\nData: %s\nDescriere: %s\n\n", "Unknown", nume, data, description);
+        }
+        fclose(file);
+    }
+
     g_free(display_text);
 }
 
@@ -37,6 +53,7 @@ void on_selection_changed(GtkTreeSelection *selection, gpointer user_data) {
     GtkTreeIter iter;
     AppWidgets *widgets = (AppWidgets *)user_data;
 
+
     if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
         gchar *nume;
         gchar *specialitate;
@@ -44,6 +61,11 @@ void on_selection_changed(GtkTreeSelection *selection, gpointer user_data) {
         gboolean lucreaza_cu_casa_de_asigurari;
 
         gtk_tree_model_get(model, &iter, 0, &nume, 1, &specialitate, 2, &loc_de_munca, 3, &lucreaza_cu_casa_de_asigurari, -1);
+
+        if (widgets->selected_doctor != NULL) {
+            g_free(widgets->selected_doctor);
+        }
+        widgets->selected_doctor = g_strdup(nume);
 
         GtkWidget *details_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(details_window), "Programeaza-te la medic");

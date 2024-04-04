@@ -13,6 +13,7 @@ typedef struct {
     GtkWidget *name_entry;
     GtkWidget *data_entry;
     GtkWidget *description_entry;
+    gchar *selected_doctor;
 } AppWidgets;
 
 #endif
