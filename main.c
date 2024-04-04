@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
-
+#include <stdio.h>
+#include <unistd.h>
 // TODO: ACESTE DATE TREBUIE MUTATE INTR-UN FISIER SEPARAT SI ENCAPSULATE!!!!!!!1!
 GtkWidget *name_entry;
 GtkWidget *data_entry;
@@ -101,12 +102,7 @@ static void on_selection_changed(GtkTreeSelection *selection, gpointer user_data
     }
 }
 
-static void adauga_medic(GtkWidget *widget, AppWidgets *widgets) {
-    const gchar *nume = gtk_entry_get_text(GTK_ENTRY(widgets->nume_entry));
-    const gchar *specialitate = gtk_entry_get_text(GTK_ENTRY(widgets->specialitate_entry));
-    const gchar *loc_de_munca = gtk_entry_get_text(GTK_ENTRY(widgets->loc_de_munca_entry));
-    gboolean lucreaza_cu_casa_de_asigurari = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->lucreaza_cu_casa_de_asigurari_checkbox));
-
+static void adauga_medic(AppWidgets *widgets, gchar *nume, gchar *specialitate, gchar *loc_de_munca, gboolean lucreaza_cu_casa_de_asigurari) {
     // Alocare memorie
     MedicInfo *medic_info = g_slice_new(MedicInfo);
     medic_info->nume = g_strdup(nume);
@@ -114,10 +110,14 @@ static void adauga_medic(GtkWidget *widget, AppWidgets *widgets) {
     medic_info->loc_de_munca = g_strdup(loc_de_munca);
     medic_info->lucreaza_cu_casa_de_asigurari = lucreaza_cu_casa_de_asigurari;
 
-    // Introdu un nou medic in catalog
+    // Introdu un nou medic în catalog
     GtkTreeIter iter;
     gtk_list_store_append(widgets->doctor_store, &iter);
     gtk_list_store_set(widgets->doctor_store, &iter, 0, medic_info->nume, 1, medic_info->specialitate, 2, medic_info->loc_de_munca, 3, medic_info->lucreaza_cu_casa_de_asigurari, -1);
+
+    // Emiterea unui semnal pentru a actualiza afișajul
+    GtkTreeModel *model = GTK_TREE_MODEL(widgets->doctor_store);
+    gtk_tree_model_foreach(model, (GtkTreeModelForeachFunc)gtk_tree_model_row_changed, NULL);
 }
 
 static void activate(GtkApplication *app, gpointer user_data) {
@@ -136,7 +136,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
     GtkWidget *doctor_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(widgets->doctor_store));
     gtk_grid_attach(GTK_GRID(grid), doctor_view, 0, 0, 3, 6);
-    gtk_window_set_icon_from_file(GTK_WINDOW(window), "C:\\books\\C programming\\untitled\\icon_med.ico", NULL);
 
     GtkCellRenderer *renderer;
     GtkTreeViewColumn *column;
@@ -158,27 +157,43 @@ static void activate(GtkApplication *app, gpointer user_data) {
     column = gtk_tree_view_column_new_with_attributes("Lucreaza cu Casa de Asigurari", renderer, "text", 3, NULL);
     gtk_tree_view_append_column(GTK_TREE_VIEW(doctor_view), column);
 
-    // Adauga medic
+    // Open the file for reading
+    FILE *file = fopen("../medici.txt", "r");
+    if (file == NULL) {
+        g_print("Eroare la deschiderea fisierului!\n");
+        return;
+    }
+    g_print("File opened successfully.\n");
+    char first_char = fgetc(file);
+    g_print("First character of the file: %c\n", first_char);
+    fseek(file, 0, SEEK_SET);  // Reset the file pointer to the beginning of the file
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        g_print("Line read from file: %s\n", line);
+        gchar *nume = g_malloc(256);
+        gchar *specialitate = g_malloc(256);
+        gchar *loc_de_munca = g_malloc(256);
+        gboolean lucreaza_cu_casa_de_asigurari;
+        if (sscanf(line, "%[^,],%[^,], %[^\n]", nume, specialitate, loc_de_munca) == 3) {
 
-    GtkTreeIter iter;
-    gtk_list_store_append(widgets->doctor_store, &iter);
-    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Ion Popescu", 1, "Oncologie", 2, "Spitalul Clinic de Urgenta, Bucuresti", 3, TRUE, -1);
-    gtk_list_store_append(widgets->doctor_store, &iter);
-    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Ionut Popescu", 1, "Medicina Interna", 2, "Spitalul Clinic de Urgenta, Bucuresti", 3, TRUE, -1);
-    gtk_list_store_append(widgets->doctor_store, &iter);
-    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Andrei Marin", 1, "Chirurgie Generala", 2, "Spitalul Judetean de Urgenta, Buzau", 3, TRUE, -1);
-    gtk_list_store_append(widgets->doctor_store, &iter);
-    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Mihai Raduleascu", 1, "Chirurgie Plastica", 2, "Spitalul Clinic de Urgență Chirurgie Plastică, Reparatorie și Arsuri, Bucuresti", 3, TRUE, -1);
-    gtk_list_store_append(widgets->doctor_store, &iter);
-    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Raluca Muresan", 1, "Chirurgie Plastica", 2, "Spitalul Clinic de Urgență Chirurgie Plastică, Reparatorie și Arsuri, Bucuresti", 3, TRUE, -1);
-    gtk_list_store_append(widgets->doctor_store, &iter);
-    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Mihai Ionac", 1, "Chirurgie Plastica", 2, "Spitalul Clinic de Urgență Chirurgie Plastică, Reparatorie și Arsuri, Bucuresti", 3, TRUE, -1);
-    gtk_list_store_append(widgets->doctor_store, &iter);
-    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Alexandra Iulia Munteanu", 1, "Endocrinologie", 2, "Spitalul Județean de Urgență, Timisoara", 3, TRUE, -1);
-    gtk_list_store_append(widgets->doctor_store, &iter);
-    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Mihai Ionac", 1, "Cardiologie", 2, "Spitalul \"Pius Brinzeu\", Timisoara", 3, TRUE, -1);
-    gtk_list_store_append(widgets->doctor_store, &iter);
-    gtk_list_store_set(widgets->doctor_store, &iter, 0, "Roxana Livia Iliescu", 1, "Neurologie", 2, "Spitalul \"Pius Brinzeu\", Timisoara", 3, TRUE, -1);
+            loc_de_munca[strlen(loc_de_munca) - 2] = '\0';
+
+            lucreaza_cu_casa_de_asigurari = line[strlen(line) - 2] - '0';
+
+            g_print("Data read from file: %s, %s, %s, %d\n", nume, specialitate, loc_de_munca, lucreaza_cu_casa_de_asigurari);
+
+            adauga_medic(widgets, nume, specialitate, loc_de_munca, lucreaza_cu_casa_de_asigurari);
+
+            g_print("Data added to doctor_store: %s, %s, %s, %d\n", nume, specialitate, loc_de_munca, lucreaza_cu_casa_de_asigurari);
+        } else {
+            g_print("Eroare la citirea datelor din fisier!\n");
+        }
+        g_free(nume);
+        g_free(specialitate);
+        g_free(loc_de_munca);
+    }
+    fclose(file);
+
     GtkWidget *nume_label = gtk_label_new("Nume:");
     gtk_grid_attach(GTK_GRID(grid), nume_label, 3, 1, 1, 1);
     widgets->nume_entry = gtk_entry_new();
@@ -204,6 +219,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
     g_signal_connect(adauga_button, "clicked", G_CALLBACK(adauga_medic), widgets);
 }
+
 
 int main(int argc, char **argv) {
     GtkApplication *app;
