@@ -8,11 +8,12 @@ include_directories(${GTK3_INCLUDE_DIRS})
 link_directories(${GTK3_LIBRARY_DIRS})
 add_definitions(${GTK3_CFLAGS_OTHER})
 
-# Define your project's executable target
 add_executable(gtk_app main.c
         programare_medicala.h
         programare_medicala.c
-        medici.txt)
+        medici.txt
+        functii.c
+        medic_info.h)
 
 
 target_link_libraries(gtk_app ${GTK3_LIBRARIES})

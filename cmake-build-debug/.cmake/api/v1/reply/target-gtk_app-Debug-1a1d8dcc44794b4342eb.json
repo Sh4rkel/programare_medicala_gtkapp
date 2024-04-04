@@ -36,7 +36,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 18,
+				"line" : 20,
 				"parent" : 0
 			},
 			{
@@ -128,7 +128,8 @@
 			"sourceIndexes" : 
 			[
 				0,
-				2
+				2,
+				4
 			]
 		}
 	],
@@ -306,14 +307,16 @@
 			"sourceIndexes" : 
 			[
 				0,
-				2
+				2,
+				4
 			]
 		},
 		{
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				1
+				1,
+				5
 			]
 		},
 		{
@@ -347,6 +350,17 @@
 			"backtrace" : 1,
 			"path" : "medici.txt",
 			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "functii.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "medic_info.h",
+			"sourceGroupIndex" : 1
 		}
 	],
 	"type" : "EXECUTABLE"
