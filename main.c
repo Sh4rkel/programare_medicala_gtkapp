@@ -16,7 +16,7 @@ typedef struct {
     GtkWidget *lucreaza_cu_casa_de_asigurari_checkbox;
     GtkListStore *doctor_store;
     GtkWidget *display_label;
-    GtkWidget *name_entry; // Adaugăm intrările pentru datele medicului aici
+    GtkWidget *name_entry;
     GtkWidget *data_entry;
     GtkWidget *description_entry;
 } AppWidgets;
@@ -30,6 +30,27 @@ static void on_save_button_clicked(GtkWidget *widget, gpointer user_data) {
     gchar *display_text = g_strdup_printf("Nume: %s\nData: %s\nDescriere: %s\n", nume, data, description);
     gtk_label_set_text(GTK_LABEL(widgets->display_label), display_text);
     g_free(display_text);
+}
+
+static void on_calendar_day_selected(GtkCalendar *calendar, gpointer user_data) {
+    AppWidgets *widgets = (AppWidgets *)user_data;
+    guint day, month, year;
+    gtk_calendar_get_date(calendar, &year, &month, &day);
+    gchar *date_string = g_strdup_printf("%02d-%02d-%04d", day, month + 1, year);
+    gtk_entry_set_text(GTK_ENTRY(widgets->data_entry), date_string);
+    g_free(date_string);
+}
+
+static void on_data_entry_icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent *event, gpointer user_data) {
+    if (icon_pos == GTK_ENTRY_ICON_SECONDARY) {
+        GtkWidget *calendar_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_title(GTK_WINDOW(calendar_window), "Select a Date");
+        gtk_window_set_default_size(GTK_WINDOW(calendar_window), 200, 200);
+        GtkWidget *calendar = gtk_calendar_new();
+        g_signal_connect(calendar, "day-selected", G_CALLBACK(on_calendar_day_selected), user_data);
+        gtk_container_add(GTK_CONTAINER(calendar_window), calendar);
+        gtk_widget_show_all(calendar_window);
+    }
 }
 
 static void on_selection_changed(GtkTreeSelection *selection, gpointer user_data) {
@@ -54,17 +75,23 @@ static void on_selection_changed(GtkTreeSelection *selection, gpointer user_data
 
         GtkWidget *name_label = gtk_label_new("Nume:");
         widgets->name_entry = gtk_entry_new();
-        gtk_entry_set_text(GTK_ENTRY(widgets->name_entry), nume); // Setăm valoarea din listă
+        gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->name_entry), "Introduceți numele aici");
         gtk_grid_attach(GTK_GRID(details_grid), name_label, 0, 0, 1, 1);
         gtk_grid_attach(GTK_GRID(details_grid), widgets->name_entry, 1, 0, 1, 1);
 
         GtkWidget *data_label = gtk_label_new("Data:");
         widgets->data_entry = gtk_entry_new();
+        gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->data_entry), "Introduceți data aici (DD-MM-YYYY)");
+        gtk_entry_set_icon_from_icon_name(GTK_ENTRY(widgets->data_entry), GTK_ENTRY_ICON_SECONDARY, "x-office-calendar");
+        g_signal_connect(widgets->data_entry, "icon-press", G_CALLBACK(on_data_entry_icon_press), widgets);
         gtk_grid_attach(GTK_GRID(details_grid), data_label, 0, 1, 1, 1);
         gtk_grid_attach(GTK_GRID(details_grid), widgets->data_entry, 1, 1, 1, 1);
 
         GtkWidget *description_label = gtk_label_new("Motivul consultatiei dvs.:");
         widgets->description_entry = gtk_entry_new();
+        gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->description_entry), "Introduceți motivul consultației aici");
+        gtk_entry_set_max_length(GTK_ENTRY(widgets->description_entry), 50);
+        gtk_widget_set_size_request(widgets->description_entry, 400, 200); // Set minimum size
         gtk_grid_attach(GTK_GRID(details_grid), description_label, 0, 2, 1, 1);
         gtk_grid_attach(GTK_GRID(details_grid), widgets->description_entry, 1, 2, 1, 1);
 
@@ -83,17 +110,6 @@ static void on_selection_changed(GtkTreeSelection *selection, gpointer user_data
         g_free(loc_de_munca);
     }
 }
-static void adauga_medic(AppWidgets *widgets, gchar *nume, gchar *specialitate, gchar *loc_de_munca, gboolean lucreaza_cu_casa_de_asigurari);
-static void on_adauga_button_clicked(GtkWidget *widget, gpointer user_data) {
-    AppWidgets *widgets = (AppWidgets *)user_data;
-    const gchar *nume = gtk_entry_get_text(GTK_ENTRY(widgets->nume_entry));
-    const gchar *specialitate = gtk_entry_get_text(GTK_ENTRY(widgets->specialitate_entry));
-    const gchar *loc_de_munca = gtk_entry_get_text(GTK_ENTRY(widgets->loc_de_munca_entry));
-    gboolean lucreaza_cu_casa_de_asigurari = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->lucreaza_cu_casa_de_asigurari_checkbox));
-
-    adauga_medic(widgets, nume, specialitate, loc_de_munca, lucreaza_cu_casa_de_asigurari);
-}
-
 static void adauga_medic(AppWidgets *widgets, gchar *nume, gchar *specialitate, gchar *loc_de_munca, gboolean lucreaza_cu_casa_de_asigurari) {
     MedicInfo *medic_info = g_slice_new(MedicInfo);
     medic_info->nume = g_strdup(nume);
@@ -107,6 +123,21 @@ static void adauga_medic(AppWidgets *widgets, gchar *nume, gchar *specialitate, 
 
     GtkTreeModel *model = GTK_TREE_MODEL(widgets->doctor_store);
     gtk_tree_model_foreach(model, (GtkTreeModelForeachFunc)gtk_tree_model_row_changed, NULL);
+}
+
+static void on_adauga_button_clicked(GtkWidget *widget, gpointer user_data) {
+    AppWidgets *widgets = (AppWidgets *)user_data;
+    const gchar *nume = gtk_entry_get_text(GTK_ENTRY(widgets->nume_entry));
+    const gchar *specialitate = gtk_entry_get_text(GTK_ENTRY(widgets->specialitate_entry));
+    const gchar *loc_de_munca = gtk_entry_get_text(GTK_ENTRY(widgets->loc_de_munca_entry));
+    gboolean lucreaza_cu_casa_de_asigurari = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->lucreaza_cu_casa_de_asigurari_checkbox));
+
+    adauga_medic(widgets, nume, specialitate, loc_de_munca, lucreaza_cu_casa_de_asigurari);
+    FILE *file = fopen("../medici.txt", "a");
+    if (file != NULL) {
+        fprintf(file, "%s,%s,%s,%d\n", nume, specialitate, loc_de_munca, lucreaza_cu_casa_de_asigurari);
+        fclose(file);
+    }
 }
 
 static void activate(GtkApplication *app, gpointer user_data) {
