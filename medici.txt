@@ -6,4 +6,4 @@ Raluca Muresan,Chirurgie Plastica,Spitalul Clinic de Urgență Chirurgie Plastic
 Mihai Ionac,Chirurgie Plastica,Spitalul Clinic de Urgență Chirurgie Plastică, Reparatorie și Arsuri, Bucuresti,1
 Alexandra Iulia Munteanu,Endocrinologie,Spitalul Județean de Urgență, Timisoara,1
 Mihai Ionac,Cardiologie,Spitalul "Pius Brinzeu", Timisoara,1
-Roxana Livia Iliescu,Neurologie,Spitalul "Pius Brinzeu", Timisoara,1
+Roxana Livia Iliescu,Neurologie,Spitalul "Pius Brinzeu", Timisoara,1Ion Popescu,Oncologie,Spitalul Clinic de Urgenta, Bucuresti,1
