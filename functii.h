@@ -4,7 +4,7 @@
 #define GTKAPP_FUNCTII_H
 #include <gtk/gtk.h>
 #include "app_widgets.h"
-
+void on_delete_button_clicked(GtkWidget *widget, gpointer user_data);
 void on_save_button_clicked(GtkWidget *widget, gpointer user_data);
 void on_calendar_day_selected(GtkCalendar *calendar, gpointer user_data);
 void on_data_entry_icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent *event, gpointer user_data);

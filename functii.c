@@ -1,8 +1,13 @@
 #include "functii.h"
 #include "medic_info.h"
+
+GtkTreeIter selected_iter;
+gboolean is_row_selected = FALSE;
+
 void on_save_button_clicked(GtkWidget *widget, gpointer user_data) {
+    GtkTreeModel *model;
     AppWidgets *widgets = (AppWidgets *)user_data;
-    const gchar *nume = gtk_entry_get_text(GTK_ENTRY(widgets->nume_entry));
+    const gchar *nume = gtk_entry_get_text(GTK_ENTRY(widgets->name_entry));
     const gchar *data = gtk_entry_get_text(GTK_ENTRY(widgets->data_entry));
     const gchar *description = gtk_entry_get_text(GTK_ENTRY(widgets->description_entry));
 
@@ -11,7 +16,7 @@ void on_save_button_clicked(GtkWidget *widget, gpointer user_data) {
         return;
     }
 
-    gchar *display_text = g_strdup_printf("Nume: %s\nData: %s\nDescriere: %s\n", nume, data, description);
+    gchar *display_text = g_strdup_printf("Programarea dvs. a fost salvata. Multumim pentru incredere!");
     gtk_label_set_text(GTK_LABEL(widgets->display_label), display_text);
 
     FILE *file = fopen("../programari.txt", "a");
@@ -48,19 +53,20 @@ void on_data_entry_icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, Gd
     }
 }
 
+
 void on_selection_changed(GtkTreeSelection *selection, gpointer user_data) {
     GtkTreeModel *model;
-    GtkTreeIter iter;
     AppWidgets *widgets = (AppWidgets *)user_data;
 
-
-    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+    if (gtk_tree_selection_get_selected(selection, &model, &selected_iter)) {
         gchar *nume;
         gchar *specialitate;
         gchar *loc_de_munca;
         gboolean lucreaza_cu_casa_de_asigurari;
 
-        gtk_tree_model_get(model, &iter, 0, &nume, 1, &specialitate, 2, &loc_de_munca, 3, &lucreaza_cu_casa_de_asigurari, -1);
+        gtk_tree_model_get(model, &selected_iter, 0, &nume, 1, &specialitate, 2, &loc_de_munca, 3, &lucreaza_cu_casa_de_asigurari, -1);
+
+        g_print("Selected row data: %s, %s, %s, %d\n", nume, specialitate, loc_de_munca, lucreaza_cu_casa_de_asigurari);
 
         if (widgets->selected_doctor != NULL) {
             g_free(widgets->selected_doctor);
@@ -109,6 +115,9 @@ void on_selection_changed(GtkTreeSelection *selection, gpointer user_data) {
         g_free(nume);
         g_free(specialitate);
         g_free(loc_de_munca);
+        is_row_selected = TRUE;
+    } else {
+        is_row_selected = FALSE;
     }
 }
 void adauga_medic(AppWidgets *widgets, gchar *nume, gchar *specialitate, gchar *loc_de_munca, gboolean lucreaza_cu_casa_de_asigurari) {
@@ -141,6 +150,46 @@ void on_adauga_button_clicked(GtkWidget *widget, gpointer user_data) {
     }
 }
 
+void on_delete_button_clicked(GtkWidget *widget, gpointer user_data) {
+    g_print("Delete button clicked.\n");
+    AppWidgets *widgets = (AppWidgets *)user_data;
+
+    if(is_row_selected) {
+        g_print("A row is selected.\n");
+        gtk_list_store_remove(widgets->doctor_store, &selected_iter);
+
+        FILE *file = fopen("../medici.txt", "w");
+        g_print("File opened\n");
+        if (file != NULL) {
+            g_print("File opened successfully for writing.\n");
+            GtkTreeIter iter;
+            gboolean valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(widgets->doctor_store), &iter);
+            while (valid) {
+                gchar *nume;
+                gchar *specialitate;
+                gchar *loc_de_munca;
+                gboolean lucreaza_cu_casa_de_asigurari;
+
+                gtk_tree_model_get(GTK_TREE_MODEL(widgets->doctor_store), &iter, 0, &nume, 1, &specialitate, 2, &loc_de_munca, 3, &lucreaza_cu_casa_de_asigurari, -1);
+                fprintf(file, "%s,%s,%s,%d\n", nume, specialitate, loc_de_munca, lucreaza_cu_casa_de_asigurari);
+
+                g_free(nume);
+                g_free(specialitate);
+                g_free(loc_de_munca);
+
+                valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(widgets->doctor_store), &iter);
+            }
+            fclose(file);
+        } else {
+            g_print("Failed to open file for writing.\n");
+        }
+
+        gtk_widget_queue_draw(widgets->doctor_view);
+    } else {
+        g_print("No row is selected.\n");
+    }
+}
+
 void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
     GtkWidget *grid;
@@ -156,7 +205,14 @@ void activate(GtkApplication *app, gpointer user_data) {
 
     GtkWidget *doctor_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(widgets->doctor_store));
     gtk_grid_attach(GTK_GRID(grid), doctor_view, 0, 0, 3, 6);
+    widgets->doctor_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(widgets->doctor_store));
+    gtk_grid_attach(GTK_GRID(grid), widgets->doctor_view, 0, 0, 3, 6);
 
+    if(GTK_IS_TREE_VIEW(widgets->doctor_view)) {
+        g_print("Doctor view is a valid GtkTreeView.\n");
+    } else {
+        g_print("Doctor view is not a valid GtkTreeView.\n");
+    }
     GtkCellRenderer *renderer;
     GtkTreeViewColumn *column;
     GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(doctor_view));
@@ -198,6 +254,10 @@ void activate(GtkApplication *app, gpointer user_data) {
     }
     fclose(file);
 
+    GtkWidget *delete_button = gtk_button_new_with_label("Șterge Medic");
+    gtk_grid_attach(GTK_GRID(grid), delete_button, 3, 6, 2, 1);
+    g_signal_connect(delete_button, "clicked", G_CALLBACK(on_delete_button_clicked), widgets);
+
     GtkWidget *nume_label = gtk_label_new("Nume:");
     gtk_grid_attach(GTK_GRID(grid), nume_label, 3, 1, 1, 1);
     widgets->nume_entry = gtk_entry_new();
@@ -222,4 +282,3 @@ void activate(GtkApplication *app, gpointer user_data) {
 
     gtk_widget_show_all(window);
 }
-
