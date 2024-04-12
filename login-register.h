@@ -1,7 +1,0 @@
-#ifndef GTKAPP_LOGIN_REGISTER_H
-#define GTKAPP_LOGIN_REGISTER_H
-
-
-
-
-#endif
