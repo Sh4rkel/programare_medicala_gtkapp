@@ -4,6 +4,10 @@
 #define GTKAPP_FUNCTII_H
 #include <gtk/gtk.h>
 #include "app_widgets.h"
+void create_main_window(GtkApplication *app, gpointer user_data);
+gboolean is_valid_user(const gchar *username, const gchar *password);
+void add_user(const gchar *username, const gchar *password);
+void on_register_button_clicked(GtkWidget *widget, gpointer user_data);
 void on_delete_button_clicked(GtkWidget *widget, gpointer user_data);
 void on_save_button_clicked(GtkWidget *widget, gpointer user_data);
 void on_calendar_day_selected(GtkCalendar *calendar, gpointer user_data);

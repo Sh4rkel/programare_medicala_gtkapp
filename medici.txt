@@ -1,5 +1,8 @@
-Ion Popescu,Oncologie,Spitalul Clinic de Urgenta, Bucuresti,1
-Ionut Popescu,Medicina Interna,Spitalul Clinic de Urgenta, Bucuresti,1
-Andrei Marin,Chirurgie Generala,Spitalul Judetean de Urgenta, Buzau,1
-Alexandra Iulia Munteanu,Endocrinologie,Spitalul Județean de Urgență, Timisoara,1
-Mihai Ionac,Cardiologie,Spitalul "Pius Brinzeu", Timisoara,1
+Dr. Ana Maria Popescu, Cardiologie,Spitalul Universitar Bucuresti, Bucuresti,,1
+Dr. Andrei Ionescu, Dermatologie,Spitalul Clinic Judetean de Urgenta Timisoara, Timisoara,,1
+Dr. Ioana Radulescu, Pediatrie,Spitalul Clinic Municipal Cluj-Napoca, Cluj-Napoca,,1
+Dr. Elena Popescu, Oftalmologie,Spitalul Clinic de Oftalmologie "Dr. I. Cantacuzino", Bucuresti,,0
+Dr. Cristian Ionescu, Neurologie,Spitalul Clinic Judetean de Urgenta Cluj-Napoca, Cluj-Napoca,,1
+Dr. Mihaela Vasilescu, Ginecologie,Spitalul Clinic de Obstetrica-Ginecologie "Dr. I. Cantacuzino", Bucuresti,,0
+Dr. Ionut Radulescu, Endocrinologie,Spitalul Clinic de Urgenta "Bagdasar-Arseni", Bucuresti,,1
+Dr. Maria Dumitru, Chirurgie Generala,Spitalul Clinic Judetean de Urgenta Craiova, Craiova,,1

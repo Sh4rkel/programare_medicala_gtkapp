@@ -73,6 +73,14 @@ build CMakeFiles/gtk_app.dir/functii.c.obj: C_COMPILER__gtk_app_unscanned_Debug 
   OBJECT_DIR = CMakeFiles\gtk_app.dir
   OBJECT_FILE_DIR = CMakeFiles\gtk_app.dir
 
+build CMakeFiles/gtk_app.dir/login-register.c.obj: C_COMPILER__gtk_app_unscanned_Debug C$:/books/C$ programming/untitled/login-register.c || cmake_object_order_depends_target_gtk_app
+  DEFINES = -DLIBDEFLATE_DLL
+  DEP_FILE = CMakeFiles\gtk_app.dir\login-register.c.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/msys64/mingw64/bin/../include/gtk-3.0 -IC:/msys64/mingw64/bin/../include/pango-1.0 -IC:/msys64/mingw64/bin/../include/harfbuzz -IC:/msys64/mingw64/bin/../include/freetype2 -IC:/msys64/mingw64/bin/../include/cairo -IC:/msys64/mingw64/bin/../include/gdk-pixbuf-2.0 -IC:/msys64/mingw64/bin/../include/atk-1.0 -IC:/msys64/mingw64/bin/../include/glib-2.0 -IC:/msys64/mingw64/bin/../lib/glib-2.0/include -IC:/msys64/mingw64/bin/../include/webp -IC:/msys64/mingw64/bin/../include/libpng16 -IC:/msys64/mingw64/bin/../include/pixman-1 -IC:/msys64/mingw64/bin/../include/fribidi
+  OBJECT_DIR = CMakeFiles\gtk_app.dir
+  OBJECT_FILE_DIR = CMakeFiles\gtk_app.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target gtk_app
@@ -81,7 +89,7 @@ build CMakeFiles/gtk_app.dir/functii.c.obj: C_COMPILER__gtk_app_unscanned_Debug 
 #############################################
 # Link the executable gtk_app.exe
 
-build gtk_app.exe: C_EXECUTABLE_LINKER__gtk_app_Debug CMakeFiles/gtk_app.dir/main.c.obj CMakeFiles/gtk_app.dir/programare_medicala.c.obj CMakeFiles/gtk_app.dir/functii.c.obj
+build gtk_app.exe: C_EXECUTABLE_LINKER__gtk_app_Debug CMakeFiles/gtk_app.dir/main.c.obj CMakeFiles/gtk_app.dir/programare_medicala.c.obj CMakeFiles/gtk_app.dir/functii.c.obj CMakeFiles/gtk_app.dir/login-register.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lgtk-3  -lgdk-3  -lz  -lgdi32  -limm32  -lshell32  -lole32  -luuid  -lwinmm  -ldwmapi  -lsetupapi  -lcfgmgr32  -lhid  -lwinspool  -lcomctl32  -lcomdlg32  -lpangowin32-1.0  -lharfbuzz  -lpangocairo-1.0  -lpango-1.0  -latk-1.0  -lcairo  -lcairo-gobject  -lgdk_pixbuf-2.0  -lgio-2.0  -lglib-2.0  -lintl  -lgobject-2.0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\gtk_app.dir

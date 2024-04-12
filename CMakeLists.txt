@@ -13,7 +13,9 @@ add_executable(gtk_app main.c
         programare_medicala.c
         medici.txt
         functii.c
-        medic_info.h)
+        medic_info.h
+        login-register.h
+        login-register.c)
 
 
 target_link_libraries(gtk_app ${GTK3_LIBRARIES})

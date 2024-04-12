@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 
 typedef struct {
+    GtkApplication *app;
     GtkWidget *nume_entry;
     GtkWidget *specialitate_entry;
     GtkWidget *loc_de_munca_entry;
@@ -15,6 +16,11 @@ typedef struct {
     GtkWidget *description_entry;
     gchar *selected_doctor;
     GtkWidget *doctor_view;
+    GtkWidget *login_window;
+    GtkWidget *main_window;
+    GtkWidget *username_entry;
+    GtkWidget *password_entry;
+    GtkWidget *login_message_label;
 } AppWidgets;
 
 #endif
