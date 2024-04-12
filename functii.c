@@ -1,6 +1,7 @@
 #include "functii.h"
 #include "medic_info.h"
 #include <glib-2.0/glib/gchecksum.h>
+//#include <sqlite3.h>
 GtkTreeIter selected_iter;
 gboolean is_row_selected = FALSE;
 
@@ -12,29 +13,73 @@ typedef struct {
 } User;
 
 GList *users = NULL;
+/*
+void initialize_database() {
+    sqlite3 *db;
+    char *err_msg = 0;
 
-gchar* hash_password(const gchar *password) {
+    int rc = sqlite3_open("test.db", &db);
+
+    if (rc != SQLITE_OK) {
+        g_print("Cannot open database: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+
+        return;
+    }
+
+    char *sql = "CREATE TABLE IF NOT EXISTS Users(Username TEXT PRIMARY KEY, Password TEXT, Salt TEXT);";
+
+    rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
+
+    if (rc != SQLITE_OK ) {
+        g_print("Failed to create table\n");
+        sqlite3_free(err_msg);
+        sqlite3_close(db);
+
+        return;
+    }
+
+    sqlite3_close(db);
+}
+*/
+gchar* generate_salt() {
+    GRand* rand = g_rand_new();
+    gchar* salt = g_strdup_printf("%08x%08x", g_rand_int(rand), g_rand_int(rand));
+    g_rand_free(rand);
+    return salt;
+}
+
+gchar* hash_password(const gchar *password, const gchar *salt) {
     GChecksum *checksum = g_checksum_new(G_CHECKSUM_SHA256);
-    g_checksum_update(checksum, (const guchar *)password, -1);
+    gchar *salted_password = g_strconcat(salt, password, NULL);
+    g_checksum_update(checksum, (const guchar *)salted_password, -1);
     gchar *hashed_password = g_strdup(g_checksum_get_string(checksum));
     g_checksum_free(checksum);
+    g_free(salted_password);
     return hashed_password;
 }
 
 gboolean is_valid_user(const gchar *username, const gchar *password) {
-    gchar *hashed_password = hash_password(password);
-    gboolean is_valid = FALSE;
     FILE *file = fopen("../users.txt", "r");
     if (file != NULL) {
         char line[256];
         while (fgets(line, sizeof(line), file)) {
             gchar stored_username[256];
             gchar stored_password[256];
-            if (sscanf(line, "%[^,],%s\n", stored_username, stored_password) == 2) {
+            gchar stored_salt[256];
+
+            if (sscanf(line, "%[^,],%[^,],%[^\n]", stored_username, stored_password, stored_salt) == 3) {
+                gchar *hashed_password = hash_password(password, stored_salt);
+
                 if (g_strcmp0(username, stored_username) == 0 && g_strcmp0(hashed_password, stored_password) == 0) {
-                    is_valid = TRUE;
-                    break;
+                    g_free(hashed_password);
+                    fclose(file);
+                    return TRUE;
                 }
+
+                g_free(hashed_password);
+            } else {
+                g_print("Error reading data from file.\n");
             }
         }
         fclose(file);
@@ -42,8 +87,7 @@ gboolean is_valid_user(const gchar *username, const gchar *password) {
         g_print("Failed to open file for reading.\n");
     }
 
-    g_free(hashed_password);
-    return is_valid;
+    return FALSE;
 }
 
 void create_main_window(GtkApplication *app, gpointer user_data) {
@@ -134,11 +178,14 @@ void create_main_window(GtkApplication *app, gpointer user_data) {
     gtk_widget_show_all(widgets->main_window);
 }
 
-void add_user(const gchar *username, const gchar *password) {
-    User *user = g_slice_new(User);
-    user->username = g_strdup(username);
-    user->password = g_strdup(password);
-    users = g_list_append(users, user);
+void add_user(const gchar *username, const gchar *password, const gchar *salt) {
+    FILE *file = fopen("../users.txt", "a");
+    if (file != NULL) {
+        fprintf(file, "%s,%s,%s\n", username, password, salt);
+        fclose(file);
+    } else {
+        g_print("Failed to open file for writing.\n");
+    }
 }
 
 void on_login_button_clicked(GtkWidget *widget, gpointer user_data) {
@@ -159,19 +206,21 @@ void on_register_button_clicked(GtkWidget *widget, gpointer user_data) {
     const gchar *username = gtk_entry_get_text(GTK_ENTRY(widgets->username_entry));
     const gchar *password = gtk_entry_get_text(GTK_ENTRY(widgets->password_entry));
 
-    gchar *hashed_password = hash_password(password);
-    add_user(username, hashed_password);
+    gchar *salt = generate_salt();
+    gchar *hashed_password = hash_password(password, salt);
+    add_user(username, hashed_password, salt); // pass the salt to the add_user function
     g_free(hashed_password);
 
     gtk_label_set_text(GTK_LABEL(widgets->login_message_label), "Registration successful. You can now log in.");
 
     FILE *file = fopen("../users.txt", "a");
     if (file != NULL) {
-        fprintf(file, "%s,%s\n", username, hashed_password);
+        fprintf(file, "%s,%s,%s\n", username, hashed_password, salt);
         fclose(file);
     } else {
         g_print("Failed to open file for writing.\n");
     }
+    g_free(salt);
 }
 
 void on_save_button_clicked(GtkWidget *widget, gpointer user_data) {
@@ -291,7 +340,7 @@ void on_selection_changed(GtkTreeSelection *selection, gpointer user_data) {
     }
 }
 
-void adauga_medic(AppWidgets *widgets, gchar *nume, gchar *specialitate, gchar *loc_de_munca, gboolean lucreaza_cu_casa_de_asigurari) {
+void adauga_medic(AppWidgets *widgets, const gchar *nume, const gchar *specialitate, const gchar *loc_de_munca, gboolean lucreaza_cu_casa_de_asigurari) {
     MedicInfo *medic_info = g_slice_new(MedicInfo);
     medic_info->nume = g_strdup(nume);
     medic_info->specialitate = g_strdup(specialitate);
@@ -331,8 +380,11 @@ void on_delete_button_clicked(GtkWidget *widget, gpointer user_data) {
         g_print("A row is selected.\n");
 
         GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widgets->doctor_view));
+
         g_signal_connect(selection, "changed", G_CALLBACK(on_selection_changed), widgets);
+
         gulong handler_id = g_signal_handler_find(selection, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, G_CALLBACK(on_selection_changed), NULL);
+
         if (handler_id > 0) {
             g_signal_handler_block(selection, handler_id);
 
@@ -342,6 +394,7 @@ void on_delete_button_clicked(GtkWidget *widget, gpointer user_data) {
         } else {
             g_print("Failed to find the handler ID for the 'changed' signal.\n");
         }
+
         FILE *file = fopen("../medici.txt", "w");
         g_print("File opened\n");
         if (file != NULL) {
