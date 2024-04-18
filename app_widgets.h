@@ -5,6 +5,7 @@
 
 typedef struct {
     GtkApplication *app;
+    GtkWidget *search_result_label;
     GtkWidget *nume_entry;
     GtkWidget *specialitate_entry;
     GtkWidget *loc_de_munca_entry;
@@ -21,6 +22,7 @@ typedef struct {
     GtkWidget *username_entry;
     GtkWidget *password_entry;
     GtkWidget *login_message_label;
+    GtkWidget *search_entry;
 } AppWidgets;
 
 #endif

@@ -1,5 +1,1 @@
-Dr. Ana Maria Popescu, Cardiologie,Spitalul Universitar Bucuresti, Bucuresti,,1
-Dr. Elena Popescu, Oftalmologie,Spitalul Clinic de Oftalmologie "Dr. I. Cantacuzino", Bucuresti,,0
-Dr. Mihaela Vasilescu, Ginecologie,Spitalul Clinic de Obstetrica-Ginecologie "Dr. I. Cantacuzino", Bucuresti,,0
-Dr. Ionut Radulescu, Endocrinologie,Spitalul Clinic de Urgenta "Bagdasar-Arseni", Bucuresti,,1
-Dr. Maria Dumitru, Chirurgie Generala,Spitalul Clinic Judetean de Urgenta Craiova, Craiova,,1
+asd,asd,as,1

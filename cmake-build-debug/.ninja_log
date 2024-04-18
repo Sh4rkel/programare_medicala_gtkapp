@@ -1,13 +1,18 @@
 # ninja log v5
-0	163	7346537898761359	build.ninja	bd4684a3b8da301b
-5	606	7346534231076112	CMakeFiles/gtk_app.dir/main.c.obj	b0a7bd9f7bb1c47a
+2	188	7350912897997965	build.ninja	bd4684a3b8da301b
+6	696	7351580912026471	CMakeFiles/gtk_app.dir/main.c.obj	b0a7bd9f7bb1c47a
 0	619	7346535856743562	CMakeFiles/gtk_app.dir/functii.obj	9c2b01f67e6adbab
-9	686	7346534231877438	CMakeFiles/gtk_app.dir/functii.c.obj	b6acd029910c8b08
-610	754	7346531367787195	gtk_app.exe	9eef2e9684394bd1
+7	717	7351603273142316	CMakeFiles/gtk_app.dir/functii.c.obj	b6acd029910c8b08
+718	873	7351603274721345	gtk_app.exe	ae80f5aa9d22dd63
 10	66	7326767368067599	CMakeFiles/gtk_app.dir/programare_medicala.c.obj	eb14566955fb401b
 5	174	7346385019000512	CMakeFiles/gtk_app.dir/login-register.c.obj	301296fb51c59bc7
 3	549	7346535856053579	CMakeFiles/gtk_app.dir/main.obj	2f7eba3c89065a99
-1	206	7346537898761359	build.ninja	bd4684a3b8da301b
-5	596	7346539001799851	CMakeFiles/gtk_app.dir/functii.c.obj	b6acd029910c8b08
-4	628	7346539276779322	CMakeFiles/gtk_app.dir/functii.c.obj	b6acd029910c8b08
-628	767	7346539278121976	gtk_app.exe	ae80f5aa9d22dd63
+5	626	7351605081469978	CMakeFiles/gtk_app.dir/functii.c.obj	b6acd029910c8b08
+626	778	7351605082924937	gtk_app.exe	ae80f5aa9d22dd63
+6	556	7351606262151986	CMakeFiles/gtk_app.dir/main.c.obj	b0a7bd9f7bb1c47a
+10	660	7351606263213174	CMakeFiles/gtk_app.dir/functii.c.obj	b6acd029910c8b08
+660	814	7351606264689262	gtk_app.exe	ae80f5aa9d22dd63
+5	683	7351607194651264	CMakeFiles/gtk_app.dir/functii.c.obj	b6acd029910c8b08
+684	866	7351607196410006	gtk_app.exe	ae80f5aa9d22dd63
+5	697	7351607382325035	CMakeFiles/gtk_app.dir/functii.c.obj	b6acd029910c8b08
+698	852	7351607383813045	gtk_app.exe	ae80f5aa9d22dd63
