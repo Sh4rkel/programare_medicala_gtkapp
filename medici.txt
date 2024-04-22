@@ -1,1 +1,7 @@
-asd,asd,as,1
+Dr.Andrei Cristian, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Cristina Popescu, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Diana Tataru, Neurologie, Spitalul Clinic Județean de Urgență "Pius Brînzeu", Timișoara, 1
+Dr.Doina Georgescu, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Dumitru Mihail, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Elena Bălașa, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Elena Neaga, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1

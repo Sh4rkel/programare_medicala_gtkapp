@@ -14,9 +14,50 @@ typedef struct {
 
 GList *users = NULL;
 
+void display_search_result(AppWidgets *widgets) {
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Search Result");
+    gtk_window_set_default_size(GTK_WINDOW(window), 500, 350);
+
+    GtkWidget *grid = gtk_grid_new();
+    gtk_container_add(GTK_CONTAINER(window), grid);
+
+    GtkWidget *name_label = gtk_label_new("Nume:");
+    widgets->name_entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->name_entry), "Introduceți numele aici");
+    gtk_grid_attach(GTK_GRID(grid), name_label, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), widgets->name_entry, 1, 0, 1, 1);
+
+    GtkWidget *data_label = gtk_label_new("Data:");
+    widgets->data_entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->data_entry), "Introduceți data aici (DD-MM-YYYY)");
+    gtk_grid_attach(GTK_GRID(grid), data_label, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), widgets->data_entry, 1, 1, 1, 1);
+
+    GtkWidget *description_label = gtk_label_new("Motivul consultatiei dvs.:");
+    widgets->description_entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->description_entry), "Introduceți motivul consultației aici");
+    gtk_entry_set_max_length(GTK_ENTRY(widgets->description_entry), 50);
+    gtk_widget_set_size_request(widgets->description_entry, 400, 200);
+    gtk_grid_attach(GTK_GRID(grid), description_label, 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), widgets->description_entry, 1, 2, 1, 1);
+
+    GtkWidget *save_button = gtk_button_new_with_label("Salvează");
+    gtk_grid_attach(GTK_GRID(grid), save_button, 0, 3, 2, 1);
+
+    widgets->display_label = gtk_label_new("");
+    gtk_grid_attach(GTK_GRID(grid), widgets->display_label, 0, 4, 2, 1);
+
+    g_signal_connect(save_button, "clicked", G_CALLBACK(on_save_button_clicked), widgets);
+
+    gtk_widget_show_all(window);
+}
+
 void on_search_button_clicked(GtkWidget *widget, gpointer user_data) {
     AppWidgets *widgets = (AppWidgets *)user_data;
     const gchar *search_text = gtk_entry_get_text(GTK_ENTRY(widgets->search_entry));
+
+    g_print("%s\n", search_text);
 
     GtkTreeIter iter;
     gboolean valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(widgets->doctor_store), &iter);
@@ -25,14 +66,18 @@ void on_search_button_clicked(GtkWidget *widget, gpointer user_data) {
         gchar *doctor_name;
         gtk_tree_model_get(GTK_TREE_MODEL(widgets->doctor_store), &iter, 0, &doctor_name, -1);
 
-        if (g_strcmp0(doctor_name, search_text) == 0) {
-            GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widgets->doctor_view));
-            gtk_tree_selection_select_iter(selection, &iter);
+        if (g_strcmp0(search_text, doctor_name) == 0) {
+            const gchar *label_text = gtk_label_get_text(GTK_LABEL(widgets->search_result_label));
+            g_print("Updated label text: %s\n", label_text);
+            gtk_label_set_text(GTK_LABEL(widgets->search_result_label), label_text);
 
-            gtk_label_set_text(GTK_LABEL(widgets->search_result_label), doctor_name);
+
+            display_search_result(widgets);
+
             break;
         }
 
+        g_free(doctor_name);
         valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(widgets->doctor_store), &iter);
     }
 }
@@ -73,9 +118,7 @@ gboolean is_valid_user(const gchar *username, const gchar *password) {
                 }
 
                 g_free(hashed_password);
-            } else {
-                g_print("Eroare la citirea datelor.\n");
-            }
+            } 
         }
         fclose(file);
     } else {
@@ -100,8 +143,12 @@ void create_main_window(GtkApplication *app, gpointer user_data) {
     widgets->doctor_store = gtk_list_store_new(4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
     widgets->search_entry = gtk_entry_new();
     gtk_grid_attach(GTK_GRID(grid), widgets->search_entry, 0, 7, 2, 1);
+
     widgets->search_result_label = gtk_label_new("");
-    gtk_grid_attach(GTK_GRID(grid), widgets->search_result_label, 0, 2, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), widgets->search_result_label, 0, 8, 2, 1); // Place the label under the search bar
+
+    const gchar *label_text = gtk_label_get_text(GTK_LABEL(widgets->search_result_label));
+    g_print("Label text: %s\n", label_text);
     GtkWidget *search_button = gtk_button_new_with_label("Search");
     gtk_grid_attach(GTK_GRID(grid), search_button, 2, 7, 1, 1);
     g_signal_connect(search_button, "clicked", G_CALLBACK(on_search_button_clicked), widgets);
@@ -218,7 +265,7 @@ void on_register_button_clicked(GtkWidget *widget, gpointer user_data) {
 
     gchar *salt = generate_salt();
     gchar *hashed_password = hash_password(password, salt);
-    add_user(username, hashed_password, salt); // pass the salt to the add_user function
+    add_user(username, hashed_password, salt);
     g_free(hashed_password);
 
     gtk_label_set_text(GTK_LABEL(widgets->login_message_label), "Registration successful. You can now log in.");
@@ -331,6 +378,9 @@ void on_selection_changed(GtkTreeSelection *selection, gpointer user_data) {
         gtk_widget_set_size_request(widgets->description_entry, 400, 200);
         gtk_grid_attach(GTK_GRID(details_grid), description_label, 0, 2, 1, 1);
         gtk_grid_attach(GTK_GRID(details_grid), widgets->description_entry, 1, 2, 1, 1);
+
+        gtk_widget_set_size_request(widgets->search_result_label, 200, 50); // Set width and height
+        gtk_widget_show(widgets->search_result_label);
 
         GtkWidget *save_button = gtk_button_new_with_label("Salvează");
         gtk_grid_attach(GTK_GRID(details_grid), save_button, 0, 3, 2, 1);

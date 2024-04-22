@@ -9,9 +9,13 @@ entry {
     border-radius: 4px;
 }
 
+entry:hover {
+    border-color: #4CAF50;
+}
+
 label {
-    font-weight: bold;
-    color: #333333;
+    font-size: 16px;
+    color: #000000;
 }
 
 window {
@@ -28,8 +32,6 @@ textview {
     color: #333333;
 }
 
-
-
 window {
     background-color: #f0f0f0;
 }
@@ -45,7 +47,7 @@ button {
     border-radius: 4px;
 }
 
-label {
-    color: #333333;
-    font-size: 14px;
+button:hover {
+    background-color: #45a049;
 }
+
