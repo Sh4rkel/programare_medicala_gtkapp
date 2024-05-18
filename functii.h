@@ -4,6 +4,11 @@
 #define GTKAPP_FUNCTII_H
 #include <gtk/gtk.h>
 #include "app_widgets.h"
+void display_consults_in_new_window(GtkWidget *widget, gpointer user_data);
+void on_update_button_clicked(GtkWidget *widget, gpointer user_data);
+void on_save_update_button_clicked(GtkWidget *widget, gpointer user_data);
+void on_search_button_clicked(GtkWidget *widget, gpointer user_data);
+void on_edit_button_clicked(GtkWidget *widget, gpointer user_data);
 void create_main_window(GtkApplication *app, gpointer user_data);
 gboolean is_valid_user(const gchar *username, const gchar *password);
 void add_user(const gchar *username, const gchar *password, const gchar *salt);

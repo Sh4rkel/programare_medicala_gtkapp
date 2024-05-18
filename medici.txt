@@ -1,5 +1,7 @@
-Dr. Ana Maria Popescu, Cardiologie,Spitalul Universitar Bucuresti, Bucuresti,,1
-Dr. Elena Popescu, Oftalmologie,Spitalul Clinic de Oftalmologie "Dr. I. Cantacuzino", Bucuresti,,0
-Dr. Mihaela Vasilescu, Ginecologie,Spitalul Clinic de Obstetrica-Ginecologie "Dr. I. Cantacuzino", Bucuresti,,0
-Dr. Ionut Radulescu, Endocrinologie,Spitalul Clinic de Urgenta "Bagdasar-Arseni", Bucuresti,,1
-Dr. Maria Dumitru, Chirurgie Generala,Spitalul Clinic Judetean de Urgenta Craiova, Craiova,,1
+Dr.Andrei Cristian, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Cristina Popescu, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Diana Tataru, Neurologie, Spitalul Clinic Județean de Urgență "Pius Brînzeu", Timișoara, 1
+Dr.Doina Georgescu, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Dumitru Mihail, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Elena Bălașa, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
+Dr.Elena Neaga, Neurologie, Spitalul Clinic de Urgenta Bagdasar-Arseni, Bucuresti, 1
