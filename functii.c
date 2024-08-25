@@ -344,10 +344,6 @@ void on_selection_changed(GtkTreeSelection *selection, gpointer user_data) {
 
         g_print("Selected row data: %s, %s, %s, %d\n", nume, specialitate, loc_de_munca, lucreaza_cu_casa_de_asigurari);
 
-//        if (widgets->selected_doctor != NULL) {
-//            g_free(widgets->selected_doctor);
-//            widgets->selected_doctor = NULL;
-//        }
         widgets->selected_doctor = g_strdup(nume);
 
         GtkWidget *details_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
