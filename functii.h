@@ -1,5 +1,3 @@
-
-
 #ifndef GTKAPP_FUNCTII_H
 #define GTKAPP_FUNCTII_H
 #include <gtk/gtk.h>
